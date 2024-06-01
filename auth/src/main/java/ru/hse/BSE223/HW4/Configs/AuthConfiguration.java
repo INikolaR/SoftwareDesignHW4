@@ -1,4 +1,4 @@
-package ru.hse.BSE223.HW4;
+package ru.hse.BSE223.HW4.Configs;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

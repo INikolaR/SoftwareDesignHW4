@@ -1,4 +1,4 @@
-package ru.hse.BSE223.HW4;
+package ru.hse.BSE223.HW4.Configs;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

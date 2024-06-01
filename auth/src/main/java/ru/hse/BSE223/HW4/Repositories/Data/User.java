@@ -1,4 +1,4 @@
-package ru.hse.BSE223.HW4;
+package ru.hse.BSE223.HW4.Repositories.Data;
 
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;

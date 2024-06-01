@@ -1,4 +1,4 @@
-package ru.hse.BSE223.HW4;
+package ru.hse.BSE223.HW4.Controllers.API;
 
 import lombok.Data;
 

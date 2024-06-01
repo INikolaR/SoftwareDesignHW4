@@ -1,10 +1,11 @@
-package ru.hse.BSE223.HW4;
+package ru.hse.BSE223.HW4.Repositories;
 
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
+import ru.hse.BSE223.HW4.Repositories.Data.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,9 @@ import java.util.Objects;
 @AllArgsConstructor
 public class UserRepository {
     private final ArrayList<User> users = new ArrayList<>();
-
+    public int getNextId() {
+        return users.size();
+    }
     public User getUserByUsername(String username) {
         List<User> u = users.stream().filter(uu -> Objects.equals(uu.getUsername(), username)).toList();
         if (!u.isEmpty()) {
@@ -30,6 +33,14 @@ public class UserRepository {
     }
     public User getByUsernameAndPassword(String username, String password) {
         List<User> filteredUsers = users.stream().filter(u -> Objects.equals(u.getUsername(), username) && passwordEncoder().matches(password, u.getPassword())).toList();
+        if (!filteredUsers.isEmpty()) {
+            return filteredUsers.get(0);
+        }
+        return null;
+    }
+
+    public User getById(int id) {
+        List<User> filteredUsers = users.stream().filter(u -> u.getId() == id).toList();
         if (!filteredUsers.isEmpty()) {
             return filteredUsers.get(0);
         }

@@ -1,4 +1,4 @@
-package ru.hse.BSE223.HW4;
+package ru.hse.BSE223.HW4.Repositories.Data;
 
 import lombok.*;
 
@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class Session {
     private int id;
-    private int user_id;
+    private int userId;
     private String token;
     private Timestamp expires;
 }

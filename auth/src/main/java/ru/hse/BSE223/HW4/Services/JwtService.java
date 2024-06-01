@@ -1,4 +1,4 @@
-package ru.hse.BSE223.HW4;
+package ru.hse.BSE223.HW4.Services;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -7,6 +7,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.hse.BSE223.HW4.Repositories.Data.User;
 
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -16,10 +17,9 @@ public class JwtService {
     @Value("${token.signing.key}")
     private String jwtSigningKey;
 
-    public String generateJwt(User user) {
+    public String generateJwt(User user, Date expires) {
         Algorithm algorithm = Algorithm.HMAC256(jwtSigningKey);
-        JWTCreator.Builder jwtBuilder = JWT.create().withClaim("username", user.getUsername()).withClaim("email", user.getEmail()).withExpiresAt(Date.from(new Date().toInstant()
-                .plus(1, ChronoUnit.DAYS)));
+        JWTCreator.Builder jwtBuilder = JWT.create().withClaim("username", user.getUsername()).withClaim("email", user.getEmail()).withExpiresAt(expires);
         return jwtBuilder.sign(algorithm);
     }
 

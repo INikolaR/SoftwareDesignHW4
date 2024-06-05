@@ -9,7 +9,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -25,7 +24,6 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableMethodSecurity
 public class AuthConfiguration {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final PasswordEncoder passwordEncoder;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
@@ -37,22 +35,20 @@ public class AuthConfiguration {
                     corsConfiguration.setAllowCredentials(true);
                     return corsConfiguration;
                 }))
-                .authorizeHttpRequests((authorize) -> {
-                    authorize.requestMatchers(HttpMethod.POST, "/sign-up").permitAll()
-                            .requestMatchers(HttpMethod.POST, "/sign-in").permitAll()
-                            .requestMatchers("/v2/api-docs",
-                                    "/swagger-resources",
-                                    "/swagger-resources/**",
-                                    "/configuration/ui",
-                                    "/configuration/security",
-                                    "/swagger-ui.html",
-                                    "/webjars/**",
-                                    "/v3/api-docs/**",
-                                    "/swagger-ui/**").permitAll()
+                .authorizeHttpRequests((authorize) -> authorize.requestMatchers(HttpMethod.POST, "/sign-up").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/sign-in").permitAll()
+                        .requestMatchers("/v2/api-docs",
+                                "/swagger-resources",
+                                "/swagger-resources/**",
+                                "/configuration/ui",
+                                "/configuration/security",
+                                "/swagger-ui.html",
+                                "/webjars/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**").permitAll()
 
-                            .requestMatchers("/bye").permitAll()
-                                .anyRequest().authenticated();
-                }).sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
+                        .requestMatchers("/bye").permitAll()
+                            .anyRequest().authenticated()).sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

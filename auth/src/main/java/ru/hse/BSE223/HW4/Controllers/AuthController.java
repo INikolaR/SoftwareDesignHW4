@@ -10,9 +10,6 @@ import ru.hse.BSE223.HW4.Controllers.API.JwtAuthenticationResponse;
 import ru.hse.BSE223.HW4.Controllers.API.SignInRequest;
 import ru.hse.BSE223.HW4.Controllers.API.SignUpRequest;
 
-import java.net.http.HttpRequest;
-
-
 @RestController
 @RequiredArgsConstructor
 public class AuthController {

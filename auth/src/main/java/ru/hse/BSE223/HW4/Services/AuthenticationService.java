@@ -1,63 +1,63 @@
 package ru.hse.BSE223.HW4.Services;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.hse.BSE223.HW4.Controllers.API.JwtAuthenticationResponse;
 import ru.hse.BSE223.HW4.Controllers.API.SignInRequest;
 import ru.hse.BSE223.HW4.Controllers.API.SignUpRequest;
 import ru.hse.BSE223.HW4.Repositories.Data.Session;
 import ru.hse.BSE223.HW4.Repositories.Data.User;
-import ru.hse.BSE223.HW4.Repositories.SessionRepository;
-import ru.hse.BSE223.HW4.Repositories.UserRepository;
+import ru.hse.BSE223.HW4.Repositories.JPASessionRepository;
+import ru.hse.BSE223.HW4.Repositories.JPAUserRepository;
 
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
-    private final UserRepository userRepository;
+    private final JPAUserRepository userRepository;
     private final JwtService jwtService;
-    private final PasswordEncoder passwordEncoder;
-    private final SessionRepository sessionRepository;
+    private final JPASessionRepository sessionRepository;
     public JwtAuthenticationResponse signUp(SignUpRequest request) {
-        java.util.Date date= new java.util.Date();
-        var user = User.builder()
-                .id(userRepository.getNextId())
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .created(new Timestamp(date.getTime())).build();
-
-        userRepository.addUser(user);
-
-
+        User user = new User(request.getUsername(), passwordEncoder().encode(request.getPassword()), request.getEmail());
+        userRepository.save(user);
         Date expires = Date.from(new Date().toInstant()
                 .plus(1, ChronoUnit.DAYS));
         var jwt = jwtService.generateJwt(user, expires);
-        sessionRepository.addSession(new Session(sessionRepository.getNextId(), user.getId(), jwt, new Timestamp(expires.getTime())));
+        Session session = new Session(user.getId(), jwt, new Timestamp(expires.getTime()));
+        sessionRepository.save(session);
         return new JwtAuthenticationResponse(jwt);
     }
     public JwtAuthenticationResponse signIn(SignInRequest request) {
-        User user = userRepository.getByUsernameAndPassword(request.getUsername(), request.getPassword());
+        User user = userRepository.findByEmail(request.getEmail());
         if (user != null) {
-            Date expires = Date.from(new Date().toInstant()
-                    .plus(1, ChronoUnit.DAYS));
-            String jwt = jwtService.generateJwt(user, expires);
-            sessionRepository.addSession(new Session(sessionRepository.getNextId(), user.getId(), jwt, new Timestamp(expires.getTime())));
-            return new JwtAuthenticationResponse(jwt);
+            if (passwordEncoder().matches(request.getPassword(), user.getPassword())) {
+                Date expires = Date.from(new Date().toInstant()
+                        .plus(1, ChronoUnit.DAYS));
+                String jwt = jwtService.generateJwt(user, expires);
+                sessionRepository.save(new Session(user.getId(), jwt, new Timestamp(expires.getTime())));
+                return new JwtAuthenticationResponse(jwt);
+            }
+            return new JwtAuthenticationResponse("");
         }
         return new JwtAuthenticationResponse("");
     }
 
     public User getUserData(String token) {
-        Session session = sessionRepository.getSessionByToken(token);
+        Session session = sessionRepository.findByToken(token);
         if (session == null) {
             return null;
         }
         int userId = session.getUserId();
-        return userRepository.getById(userId);
+        Optional<User> user = userRepository.findById(userId);
+        return user.orElseGet(() -> new User("a", "a", "a"));
+    }
+
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

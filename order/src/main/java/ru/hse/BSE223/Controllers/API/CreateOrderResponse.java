@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class CreateOrderResponse {
-    private String message;
+    private int createdOrderId;
 }

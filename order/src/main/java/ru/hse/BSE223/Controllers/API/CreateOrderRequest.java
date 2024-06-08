@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class CreateOrderRequest {
-    private String from;
-    private String to;
+    private int fromStationId;
+    private int toStationId;
 }

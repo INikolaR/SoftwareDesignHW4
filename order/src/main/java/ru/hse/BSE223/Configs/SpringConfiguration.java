@@ -35,7 +35,6 @@ public class SpringConfiguration {
                     return corsConfiguration;
                 }))
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/create").permitAll()
                         .requestMatchers("/v2/api-docs",
                                 "/swagger-resources",
                                 "/swagger-resources/**",

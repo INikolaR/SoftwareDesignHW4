@@ -13,11 +13,14 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import ru.hse.BSE223.Controllers.API.UserDataResponse;
+import ru.hse.BSE223.Exceptions.BadStationIdException;
+import ru.hse.BSE223.Exceptions.UnauthorizedException;
 
 @Service
 public class JwtServiceImpl {
     @Value("${auth.url.get-user-data}")
     private String url;
+    private static final String EMAIL = "email";
     private static final String BEARER_PREFIX = "Bearer ";
     private static final String HEADER_NAME = "Authorization";
     public DecodedJWT checkAndDecodeToken(HttpServletRequest request) {
@@ -41,6 +44,46 @@ public class JwtServiceImpl {
             return JWT.decode(jwt);
         } catch (JWTVerificationException exception) {
             return null;
+        }
+    }
+
+    public DecodedJWT decodeToken(HttpServletRequest request) {
+        var authHeader = request.getHeader(HEADER_NAME);
+        if (StringUtils.isEmpty(authHeader) || !StringUtils.startsWith(authHeader, BEARER_PREFIX)) {
+            return null;
+        }
+        var jwt = authHeader.substring(BEARER_PREFIX.length());
+        try {
+            return JWT.decode(jwt);
+        } catch (JWTVerificationException exception) {
+            return null;
+        }
+    }
+
+    public String extractEmail(HttpServletRequest request) {
+        try {
+            DecodedJWT decodedJwt = decodeToken(request);
+            String email = decodedJwt.getClaim(EMAIL).asString();
+            if (StringUtils.isNotEmpty(email)) {
+                return email;
+            } else {
+                throw new UnauthorizedException("Bad token!");
+            }
+        } catch (Exception e) {
+            throw new UnauthorizedException("Bad token!");
+        }
+    }
+    public String checkAndExtractEmail(HttpServletRequest request) {
+        try {
+            DecodedJWT decodedJwt = checkAndDecodeToken(request);
+            String email = decodedJwt.getClaim(EMAIL).asString();
+            if (StringUtils.isNotEmpty(email)) {
+                return email;
+            } else {
+                throw new UnauthorizedException("Bad token!");
+            }
+        } catch (Exception e) {
+            throw new UnauthorizedException("Bad token!");
         }
     }
 }

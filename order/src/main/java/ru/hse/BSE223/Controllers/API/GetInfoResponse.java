@@ -4,14 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class GetInfoResponse {
-    private int userId;
-    private Date date;
+    private Timestamp date;
     private String from;
     private String to;
     private int status;

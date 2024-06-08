@@ -1,46 +1,46 @@
 package ru.hse.BSE223.Controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 import ru.hse.BSE223.Controllers.API.*;
-import ru.hse.BSE223.Exceptions.UnauthorizedException;
+import ru.hse.BSE223.Repositories.Data.Station;
+import ru.hse.BSE223.Services.JwtServiceImpl;
+import ru.hse.BSE223.Services.OrderServiceImpl;
+import ru.hse.BSE223.Services.StationService;
+
+import java.util.List;
 
 @RestController
+@AllArgsConstructor
 public class OrderController {
-    @Value("${auth.url.get-user-data}")
-    private String url;
+    private final JwtServiceImpl jwtService;
+    private final OrderServiceImpl orderService;
+    private final StationService stationService;
     @PostMapping("/create")
-    public CreateOrderResponse createOrder(@RequestBody CreateOrderRequest request) {
-        return new CreateOrderResponse("Created");
+    public ResponseEntity<CreateOrderResponse> createOrder(@RequestBody CreateOrderRequest request, HttpServletRequest r) {
+        String email = jwtService.checkAndExtractEmail(r);
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.create(request, email));
     }
 
-    @PostMapping("/get-info")
-    public GetInfoResponse getInfo(@RequestBody GetInfoRequest request) {
-        return new GetInfoResponse();
+    @GetMapping("/get-order-info")
+    public GetInfoResponse getInfo(GetInfoRequest request, HttpServletRequest r) {
+        String email = jwtService.checkAndExtractEmail(r);
+        return orderService.getInfo(request, email);
     }
 
-    @GetMapping("/get-all")
-    public GetAllResponse getAll() {
-        return new GetAllResponse();
+    @GetMapping("/get-all-orders")
+    public GetAllResponse getAll(HttpServletRequest r) {
+        String email = jwtService.checkAndExtractEmail(r);
+        return orderService.getAll(email);
     }
-    @GetMapping("/is-authenticated")
-    public ResponseEntity<UserDataResponse> testHello(HttpServletRequest request) {
-        try {
-            RestTemplate restTemplate = new RestTemplate();
-            MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-            headers.add("Authorization", request.getHeader("Authorization"));
-            HttpEntity<?> entity = new HttpEntity<>(headers);
-            return restTemplate.exchange(url, HttpMethod.GET, entity, UserDataResponse.class);
-        } catch (Exception e) {
-            throw new UnauthorizedException("Unauthorized!");
-        }
+    @GetMapping("/get-stations")
+    public List<Station> getAllStations() {
+        return stationService.getAllStations();
     }
 }

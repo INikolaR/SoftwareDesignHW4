@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "auth.url.get-user-data",
+      "type": "java.lang.String"
+    }
+  ]
+}

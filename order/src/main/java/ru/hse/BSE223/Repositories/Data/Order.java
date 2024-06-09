@@ -33,11 +33,4 @@ public class Order {
         this.status = status;
         this.created = new Timestamp(System.currentTimeMillis());
     }
-    public Order(String email, int fromStationId, int toStationId, int status, Timestamp created) {
-        this.email = email;
-        this.fromStationId = fromStationId;
-        this.toStationId = toStationId;
-        this.status = status;
-        this.created = created;
-    }
 }

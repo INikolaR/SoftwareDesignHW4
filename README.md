@@ -1,13 +1,13 @@
 Transactions:
 ```sql
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
                       id SERIAL PRIMARY KEY,
                       nickname VARCHAR(50) NOT NULL,
                       email VARCHAR(100) UNIQUE NOT NULL,
                       password VARCHAR(255) NOT NULL,
                       created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-CREATE TABLE sessions (
+CREATE TABLE IF NOT EXISTS sessions (
                          id SERIAL PRIMARY KEY,
                          user_id INT NOT NULL,
                          token VARCHAR(255) NOT NULL,
@@ -16,11 +16,11 @@ CREATE TABLE sessions (
 );
 ```
 ```sql
-CREATE TABLE stations (
+CREATE TABLE IF NOT EXISTS stations (
                          id SERIAL PRIMARY KEY,
                          station VARCHAR(50) NOT NULL
 );
-CREATE TABLE orders (
+CREATE TABLE IF NOT EXISTS orders (
                        id SERIAL PRIMARY KEY,
                        email VARCHAR(100) NOT NULL,
                        from_station_id INT NOT NULL,

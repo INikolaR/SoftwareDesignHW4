@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class OrderServiceImpl {
+public class OrderServiceImpl implements OrderService {
     private final JPAOrderRepository orderRepository;
     private final JPAStationRepository stationRepository;
     public CreateOrderResponse create(CreateOrderRequest request, String email) {

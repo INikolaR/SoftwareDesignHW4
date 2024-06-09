@@ -17,7 +17,7 @@ import ru.hse.BSE223.Exceptions.BadStationIdException;
 import ru.hse.BSE223.Exceptions.UnauthorizedException;
 
 @Service
-public class JwtServiceImpl {
+public class JwtServiceImpl implements JwtService {
     @Value("${auth.url.get-user-data}")
     private String url;
     private static final String EMAIL = "email";

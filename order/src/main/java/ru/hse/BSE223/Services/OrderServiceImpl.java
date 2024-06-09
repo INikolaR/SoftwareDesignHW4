@@ -2,15 +2,14 @@ package ru.hse.BSE223.Services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import ru.hse.BSE223.Controllers.API.*;
-import ru.hse.BSE223.Controllers.API.Enums.OrderStatus;
+import ru.hse.BSE223.API.*;
+import ru.hse.BSE223.API.Enums.OrderStatus;
 import ru.hse.BSE223.Exceptions.BadOrderIdException;
 import ru.hse.BSE223.Exceptions.BadStationIdException;
 import ru.hse.BSE223.Exceptions.EqualSourceDestinationException;
-import ru.hse.BSE223.Repositories.Data.Order;
-import ru.hse.BSE223.Repositories.JPAOrderRepository;
-import ru.hse.BSE223.Repositories.JPAStationRepository;
+import ru.hse.BSE223.Data.Order;
+import ru.hse.BSE223.Data.Repositories.JPAOrderRepository;
+import ru.hse.BSE223.Data.Repositories.JPAStationRepository;
 
 import java.util.List;
 import java.util.Objects;

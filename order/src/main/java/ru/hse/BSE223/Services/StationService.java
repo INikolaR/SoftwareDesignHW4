@@ -1,6 +1,6 @@
 package ru.hse.BSE223.Services;
 
-import ru.hse.BSE223.Repositories.Data.Station;
+import ru.hse.BSE223.Data.Station;
 
 import java.util.List;
 

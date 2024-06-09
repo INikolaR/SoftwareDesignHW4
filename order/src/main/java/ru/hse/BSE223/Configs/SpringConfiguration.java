@@ -14,7 +14,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 
 import java.util.List;
-import java.util.Random;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 

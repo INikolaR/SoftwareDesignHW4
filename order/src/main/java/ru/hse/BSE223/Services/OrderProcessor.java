@@ -1,12 +1,10 @@
 package ru.hse.BSE223.Services;
 
 import lombok.AllArgsConstructor;
-import org.apache.catalina.valves.rewrite.RandomizedTextRewriteMap;
-import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import ru.hse.BSE223.Repositories.Data.Order;
-import ru.hse.BSE223.Repositories.JPAOrderRepository;
+import ru.hse.BSE223.Data.Order;
+import ru.hse.BSE223.Data.Repositories.JPAOrderRepository;
 
 import java.util.List;
 import java.util.Random;

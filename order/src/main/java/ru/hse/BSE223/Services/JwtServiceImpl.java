@@ -12,8 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import ru.hse.BSE223.Controllers.API.UserDataResponse;
-import ru.hse.BSE223.Exceptions.BadStationIdException;
+import ru.hse.BSE223.API.UserDataResponse;
 import ru.hse.BSE223.Exceptions.UnauthorizedException;
 
 @Service

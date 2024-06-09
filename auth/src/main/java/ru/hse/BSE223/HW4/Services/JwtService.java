@@ -1,7 +1,7 @@
 package ru.hse.BSE223.HW4.Services;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import ru.hse.BSE223.HW4.Repositories.Data.User;
+import ru.hse.BSE223.HW4.Data.User;
 
 import java.util.Date;
 

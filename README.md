@@ -1,41 +1,122 @@
-Transactions:
-```sql
-CREATE TABLE IF NOT EXISTS users (
-                      id SERIAL PRIMARY KEY,
-                      nickname VARCHAR(50) NOT NULL,
-                      email VARCHAR(100) UNIQUE NOT NULL,
-                      password VARCHAR(255) NOT NULL,
-                      created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-CREATE TABLE IF NOT EXISTS sessions (
-                         id SERIAL PRIMARY KEY,
-                         user_id INT NOT NULL,
-                         token VARCHAR(255) NOT NULL,
-                         expires TIMESTAMP NOT NULL,
-                         FOREIGN KEY (user_id) REFERENCES users(id)
-);
+### Домашняя работа 4
+#### Инструкция по сборке
+Сборка происходит в два этапа: получение jar-файлов и запуск их в docker-контейнерах.
+##### 1) Получение jar-файлов:
+Из директории проекта:
+
+Запускаем контейнеры с базами данных (без запущенных контейнеров jar-файлы не соберутся)
 ```
-```sql
-CREATE TABLE IF NOT EXISTS stations (
-                         id SERIAL PRIMARY KEY,
-                         station VARCHAR(50) NOT NULL
-);
-CREATE TABLE IF NOT EXISTS orders (
-                       id SERIAL PRIMARY KEY,
-                       email VARCHAR(100) NOT NULL,
-                       from_station_id INT NOT NULL,
-                       to_station_id INT NOT NULL,
-                       status INT NOT NULL,
-                       created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                       FOREIGN KEY (from_station_id) REFERENCES stations(id),
-                       FOREIGN KEY (to_station_id) REFERENCES stations(id)
-);
-insert into stations (id, station) values (0, 'Moscow');
-insert into stations (id, station) values (1, 'SPB');
-insert into stations (id, station) values (2, 'Novgorod');
-insert into stations (id, station) values (3, 'Sevastopol');
-insert into stations (id, station) values (4, 'Sochi');
-insert into stations (id, station) values (5, 'Khabarovsk');
-insert into stations (id, station) values (6, 'Vladivostok');
-insert into stations (id, station) values (7, 'Petrozavodsk');
+cd docker-compose-for-build
+docker-compose up -d
 ```
+Собираем jar-файлы:
+```
+gradle build
+```
+Останавливаем контейнеры:
+```
+docker-compose down
+```
+##### 2) Запуск docker-контейнеров
+Из директории проекта:
+```
+docker-compose up -d
+```
+Теперь микросервисы доступны:
+
+auth - http://localhost:8080/swagger-ui/index.html
+
+order - http://localhost:8081/swagger-ui/index.html
+
+На семинаре Никита Юрьевич говорил, что сборку jar-файлов с помощью gradle необязательно делать внутри контейнера, именно поэтому я сделал так.
+
+#### Краткое описание архитектуры
+Проект состоит из двух микросервисов: auth (отвечает за авторизацию) и order (отвечает за заказы).
+Каждый микросервис стандартно состоит из 3 слоёв:
+1) Controllers/
+2) Services/
+3) Repositories/
+
+Микросервис заказов проверяет авторизацию пользователя с помощью обращения к микросервису с авторизацией: order посылает токен по адресу auth:8080/get-user-info и смотрит на код возврата.
+
+Каждые 5 секунд микросервис order извлекает из базы данных случайный необработанный заказ и, если такой есть, меняет его статус на SUCCESS или REJECTION случайно 50/50.
+
+#### Краткое описание интерфейса:
+При входе в систему сервер отвечает клиенту строкой с jwt-токеном. Для авторизации этот токен нужно вставить раздел Authorization.
+Если не авторизованный пользователь пытается использовать конечную точку, для которой нужна авторизация - приложение возвращает код 403 без дополнительных сообщений.
+##### Микросервис auth
+Конечные точки /sign-up и /sign-in доступны без авторизации, /get-user-info - только авторизованым пользователям.
+1) /sign-up - Регистрация пользователя.
+
+   Запрос:
+
+   Необходимо указать имя пользователя (любое непустое), адрес почты (валидный и уникальный)  и пароль (минимум 8 символов, хотя бы одна буква каждого регистра, цифра и спецсимвол).
+
+    Ответ:
+
+    При успешной регистрации - jwt-токен, при ошибочной - сообщение об ошибке.
+2) /sign-in - Вход в систему.
+
+    Запрос:
+
+    Адрес почты и пароль.
+
+    Ответ:
+
+    Новый токен при успешном входе, сообщение об ошибке - при неуспешном.
+
+3) /get-user-data - Получение информации о пользователе
+
+    Запрос:
+
+    Ничего, достаточно авторизации с помощью jwt-токена.
+
+    Ответ:
+
+    Имя пользователя, его почта и дата и время регистрации.
+
+##### Микросервис order
+Конечные точки /create, get-all-orders и /get-order-info доступны только авторизованным пользователям, а /get-all-stations - всем.
+1) /create - Создание заказа.
+
+    Запрос:
+
+    Идентификаторы начальной и конечной точек маршрута (должны быть различны).
+
+    Ответ:
+
+    Номер заказа, по которому можно в дальнейшем посмотреть информацию о нём.
+
+2) /get-stations - Просмотр списка станций.
+
+    Запрос:
+
+    Ничего.
+
+    Ответ:
+
+    Список всех имеющихся в системе станций поездов (условно названы по городу).
+
+3) /get-all-orders - Получение списка всех заказов пользователя.
+
+    Запрос:
+
+    Ничего, достаточно авторизации через jwt-токен.
+
+    Ответ:
+
+    Список номеров всех заказов авторизованного пользователя.
+
+4) /get-order-info - Получение информации о заказе.
+
+    Запрос:
+
+    Номер заказа
+
+    Ответ:
+
+    Информация о заказе: дата, название точек отправления и назначения, статус заказа (CHECK, SUCCESS или REJECTION).
+#### Паттерны
+Паттерн builder - например, в классе AuthConfiguration. С помощью него устанавливаются правила для доступа к конечным точкам.
+
+Паттерн pipeline - например, при обработке возврата из базы данных (collection.stream()).

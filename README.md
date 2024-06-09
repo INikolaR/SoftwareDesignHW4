@@ -136,3 +136,5 @@ order - http://localhost:8081/swagger-ui/index.html
  - `io.jsonwebtoken:jjwt-jackson:0.12.3`
  - `org.apache.commons:commons-lang3:3.14.0`
  - `org.postgresql:postgresql`
+
+Таким образом, критерии на 10 баллов выполнены.

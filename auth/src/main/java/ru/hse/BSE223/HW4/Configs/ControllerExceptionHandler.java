@@ -8,10 +8,6 @@ import ru.hse.BSE223.HW4.Exceptions.*;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
-    @ExceptionHandler(TestException.class)
-    public ResponseEntity<String> handleTestException(Exception ex) {
-        return ResponseEntity.status(HttpStatus.IM_USED).body(ex.getMessage());
-    }
     @ExceptionHandler(BadEmailFormatException.class)
     public ResponseEntity<String> handleBadEmailFormatException(Exception ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());

@@ -47,8 +47,6 @@ public class AuthConfiguration {
                                 "/webjars/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**").permitAll()
-
-                        .requestMatchers("/bye").permitAll()
                             .anyRequest().authenticated()).sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

@@ -28,4 +28,9 @@ public class ControllerExceptionHandler {
     public ResponseEntity<String> handleEqualSourceDestinationException(Exception ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> commonHandler(Exception ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Sorry, something went wrong, try again...");
+    }
 }

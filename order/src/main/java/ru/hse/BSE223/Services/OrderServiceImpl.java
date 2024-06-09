@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.hse.BSE223.Controllers.API.*;
+import ru.hse.BSE223.Controllers.API.Enums.OrderStatus;
 import ru.hse.BSE223.Exceptions.BadOrderIdException;
 import ru.hse.BSE223.Exceptions.BadStationIdException;
 import ru.hse.BSE223.Exceptions.EqualSourceDestinationException;
@@ -39,7 +40,7 @@ public class OrderServiceImpl implements OrderService {
             if (!Objects.equals(oo.getEmail(), email)) {
                 throw new BadOrderIdException("No order with such an id!");
             }
-            return new GetInfoResponse(oo.getCreated(), stationRepository.getReferenceById(oo.getFromStationId()).getName(), stationRepository.getReferenceById(oo.getToStationId()).getName(), oo.getStatus());
+            return new GetInfoResponse(oo.getCreated(), stationRepository.getReferenceById(oo.getFromStationId()).getName(), stationRepository.getReferenceById(oo.getToStationId()).getName(), OrderStatus.values()[oo.getStatus()]);
         } else {
             throw new BadOrderIdException("No order with such an id!");
         }

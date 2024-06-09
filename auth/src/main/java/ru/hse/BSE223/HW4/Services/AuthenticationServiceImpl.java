@@ -8,6 +8,7 @@ import ru.hse.BSE223.HW4.Controllers.API.SignInRequest;
 import ru.hse.BSE223.HW4.Controllers.API.SignUpRequest;
 import ru.hse.BSE223.HW4.Exceptions.IncorrectPasswordException;
 import ru.hse.BSE223.HW4.Exceptions.InvalidTokenException;
+import ru.hse.BSE223.HW4.Exceptions.UserAlreadyExistsException;
 import ru.hse.BSE223.HW4.Exceptions.UserNotFoundException;
 import ru.hse.BSE223.HW4.Repositories.Data.Session;
 import ru.hse.BSE223.HW4.Repositories.Data.User;
@@ -27,7 +28,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JPASessionRepository sessionRepository;
     public JwtAuthenticationResponse signUp(SignUpRequest request) {
         User user = new User(request.getUsername(), passwordEncoder().encode(request.getPassword()), request.getEmail());
-        userRepository.save(user);
+        try {
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new UserAlreadyExistsException("User with this email already exists!");
+        }
         Date expires = Date.from(new Date().toInstant()
                 .plus(1, ChronoUnit.DAYS));
         var jwt = jwtService.generateJwt(user, expires);

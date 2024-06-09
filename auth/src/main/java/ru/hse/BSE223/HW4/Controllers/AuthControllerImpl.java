@@ -2,6 +2,7 @@ package ru.hse.BSE223.HW4.Controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hse.BSE223.HW4.Controllers.API.UserDataResponse;
@@ -25,8 +26,9 @@ public class AuthControllerImpl implements AuthController {
     }
     @GetMapping("/bye")
     public ResponseEntity<String> getBye() {
-        throw new TestException("LLL");
-//        return new ResponseEntity<String>("Bye!", HttpStatus.OK);
+        Integer a = null;
+        a = a + 1;
+        return new ResponseEntity<String>("Bye!", HttpStatus.OK);
 //        return new ResponseEntity<String>("Test", HttpStatus.I_AM_A_TEAPOT);
     }
 

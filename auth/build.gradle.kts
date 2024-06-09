@@ -18,6 +18,7 @@ repositories {
 dependencies {
 	compileOnly("org.projectlombok:lombok:1.18.30")
 	annotationProcessor("org.projectlombok:lombok:1.18.30")
+	implementation("org.liquibase:liquibase-core")
 	implementation("com.auth0:java-jwt:3.14.0")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-security")

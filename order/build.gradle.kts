@@ -21,6 +21,7 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-ui:1.7.0")
     compileOnly("org.projectlombok:lombok:1.18.30")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
+    implementation("org.liquibase:liquibase-core")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.security:spring-security-config")

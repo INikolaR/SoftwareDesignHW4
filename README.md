@@ -120,3 +120,19 @@ order - http://localhost:8081/swagger-ui/index.html
 Паттерн builder - например, в классе AuthConfiguration. С помощью него устанавливаются правила для доступа к конечным точкам.
 
 Паттерн pipeline - например, при обработке возврата из базы данных (collection.stream()).
+#### Использованые библиотеки:
+ - `org.springframework.boot:spring-boot-starter-data-jpa`
+ - `org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.3`
+ - `org.springdoc:springdoc-openapi-ui:1.7.0`
+ - `org.projectlombok:lombok:1.18.30`
+ - `org.projectlombok:lombok:1.18.30`
+ - `org.liquibase:liquibase-core`
+ - `org.springframework.boot:spring-boot-starter-web`
+ - `org.springframework.boot:spring-boot-starter-security`
+ - `org.springframework.security:spring-security-config`
+ - `com.auth0:java-jwt:3.14.0`
+ - `io.jsonwebtoken:jjwt-api:0.12.3`
+ - `io.jsonwebtoken:jjwt-impl:0.12.3`
+ - `io.jsonwebtoken:jjwt-jackson:0.12.3`
+ - `org.apache.commons:commons-lang3:3.14.0`
+ - `org.postgresql:postgresql`
